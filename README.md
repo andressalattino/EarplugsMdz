@@ -8,7 +8,7 @@ Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo
 - Sitio y API implementados. Para usar visitas y autenticación con tu base real, ejecutar el SQL y configurar las variables indicadas abajo.
 - WhatsApp configurado: **+54 261 507 7131**.
 - Logo original de EarplugsMdz: símbolo SVG y marca tipográfica.
-- Tres productos seleccionados del [catálogo de referencia](https://earplugs.com.ar/products), con fotos y **precios de referencia**, consultados el 12/09/2026. No se presentan como precios confirmados de EarplugsMdz. Editarlos antes de ofrecer precios propios.
+- Un único producto: **Loop Experience 2**, con la imagen principal del enlace de Amazon indicado por el usuario. Precio indicado por el vendedor: **ARS 25.000**.
 - La configuración `.env.local` de esta carpeta tiene el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Falta completar únicamente Supabase y ajustar el origen para producción.
 
 ## 1. Probar localmente
@@ -121,7 +121,7 @@ from pg_class where relname in ('epm_visits', 'epm_rate_limits');
 
 ## 8. Editar productos, precios, imágenes y contacto
 
-`src/content.js` contiene todos los datos del vendedor y del catálogo. Para publicar precios propios, cambiá `price` (número en ARS) y poné `business.referencePrices = false`. `price: null` muestra “Consultar precio”. El nombre, descripción e imagen de cada tarjeta se editan en el mismo archivo. Actualizá también los textos estáticos si cambiás la empresa o su ubicación.
+`src/content.js` contiene todos los datos del vendedor y del catálogo. Para publicar el precio, cambiá `price` (número en ARS). `price: null` muestra “Consultar precio”. El nombre, descripción e imagen de cada tarjeta se editan en el mismo archivo. Actualizá también los textos estáticos si cambiás la empresa o su ubicación.
 
 Las fotos están en `public/images/`; el símbolo del logo es `public/favicon.svg`. La procedencia de cada imagen se detalla en `ASSETS.md`. No se copiaron testimonios, cifras comerciales ni afirmaciones sobre la empresa de referencia.
 
@@ -153,6 +153,6 @@ Como el directorio estaba vacío, **todos los archivos del proyecto son nuevos**
 
 `npm test`: 19 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
 
-`npm run build`: compilación de producción verificada. Navegación, filtros, enlace de WhatsApp, menú móvil, inicio de sesión y dashboard probados en navegador. El dashboard se comprobó contra una base PostgreSQL local de prueba aislada; esos datos **no forman parte del producto ni de tu Supabase**. Falta probar el entorno real después de configurar tus variables.
+`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo muestra un único producto, sin filtros de categorías. El dashboard se comprobó contra una base PostgreSQL local de prueba aislada; esos datos **no forman parte del producto ni de tu Supabase**. Falta probar el entorno real después de configurar tus variables.
 
 Fuentes técnicas: [Tailwind con Vite](https://tailwindcss.com/docs/installation/using-vite), [RLS en Supabase](https://supabase.com/docs/guides/database/postgres/row-level-security), [claves de Supabase](https://supabase.com/docs/guides/getting-started/api-keys), [funciones Node.js en Vercel](https://vercel.com/docs/functions/runtimes/node-js), [país aproximado en Vercel](https://vercel.com/docs/headers/request-headers).

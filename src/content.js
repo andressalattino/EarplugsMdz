@@ -1,18 +1,14 @@
-// Datos públicos editables. Precios ARS tomados del catálogo de referencia el 12/09/2026.
-// Reemplazar por los precios de EarplugsMdz y poner referencePrices=false al confirmarlos.
+// Un único producto. Precio de EarplugsMdz en ARS, indicado por el vendedor.
 export const business = {
   name: 'EarplugsMdz',
   location: 'Mendoza, Argentina',
   whatsapp: '542615077131',
   displayPhone: '+54 261 507 7131',
-  message: '¡Hola, EarplugsMdz! Quiero consultar por los tapones para oídos.',
-  referencePrices: true,
+  message: '¡Hola, EarplugsMdz! Quiero consultar por los Loop Experience 2.',
 };
 
 export const products = [
-  { id: 'ruido', name: 'Goma Soft Expandible', category: 'Tu día, más tranquilo · 1 par', description: 'Tapones de goma expandible con cuerda para reducir el ruido del entorno. Presentación de un par. Consultá su colocación y nivel de protección.', price: 4085, image: '/images/ruido.png', color: 'lilac', tag: 'RUIDO' },
-  { id: 'descanso', name: 'Silicona Moldeable', category: 'Tu momento de desconectar · 2 pares', description: 'Tapones de silicona moldeable incolora para agua y ruidos molestos. Presentación de dos pares con estuche. Consultanos por su uso durante el descanso.', price: 4170, image: '/images/descanso.png', color: 'peach', tag: 'DESCANSO' },
-  { id: 'agua', name: 'Splash', category: 'Disfrutá cada chapuzón · 2 pares', description: 'Tapones de silicona moldeable verde flúo, línea Splash para actividades acuáticas. Presentación de dos pares. Seguí las instrucciones del fabricante.', price: 4170, image: '/images/agua.png', color: 'mint', tag: 'AGUA' },
+  { id: 'loop-experience-2', name: 'Loop Experience 2', category: 'Música, recitales y eventos · 1 par', description: 'Tapones reutilizables de alta fidelidad que filtran el ruido y mantienen la claridad de la música. Un diseño compacto para acompañarte en recitales, festivales y eventos.', price: 25000, image: '/images/loop-experience-2.jpg', color: 'lilac', tag: 'ALTA FIDELIDAD', features: ['Un par de tapones Loop Experience 2', 'Almohadillas de silicona en talles XS, S, M y L', 'Estuche para llevarlos con vos'] },
 ];
 
 export function whatsappUrl(message = business.message) {

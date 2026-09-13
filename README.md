@@ -5,11 +5,11 @@ Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo
 ## Estado de entrega
 
 - Repositorio Git local creado. No se creó un repositorio remoto ni se publicaron cambios en una cuenta de Vercel.
-- Sitio y API implementados. Para usar visitas y autenticación con tu base real, ejecutar el SQL y configurar las variables indicadas abajo.
+- Sitio y API implementados. Supabase conectado y verificado en el entorno local el 13/09/2026. El SQL ya está aplicado en el proyecto EarplugsMdz; no hace falta ejecutarlo otra vez en ese proyecto.
 - WhatsApp configurado: **+54 261 507 7131**.
 - Logo original de EarplugsMdz: símbolo SVG y marca tipográfica.
 - Un único producto: **Loop Experience 2**, con la imagen principal del enlace de Amazon indicado por el usuario. Precio indicado por el vendedor: **ARS 25.000**.
-- La configuración `.env.local` de esta carpeta tiene el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Falta completar únicamente Supabase y ajustar el origen para producción.
+- La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Para producción falta agregar las variables en Vercel y ajustar `APP_ORIGIN` al dominio publicado.
 
 ## 1. Probar localmente
 
@@ -153,6 +153,8 @@ Como el directorio estaba vacío, **todos los archivos del proyecto son nuevos**
 
 `npm test`: 19 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
 
-`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo muestra un único producto, sin filtros de categorías. El dashboard se comprobó contra una base PostgreSQL local de prueba aislada; esos datos **no forman parte del producto ni de tu Supabase**. Falta probar el entorno real después de configurar tus variables.
+`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo muestra un único producto, sin filtros de categorías. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
+
+Conexión real verificada el 13/09/2026: ambas tablas tienen RLS activado y forzado. La clave pública no puede consultar las tablas ni ejecutar `epm_stats` (401). La API local rechaza estadísticas sin sesión (401) y solicitudes de registro desde otro origen (403). Se registró una visita de prueba real, evento `a911600e-cb19-4afd-aa84-28aebd700398`, y se verificó que reintentar ese mismo evento no lo duplica. El inicio de sesión con el administrador y el dashboard muestran los datos reales de Supabase. Falta verificar el despliegue en Vercel cuando se publique.
 
 Fuentes técnicas: [Tailwind con Vite](https://tailwindcss.com/docs/installation/using-vite), [RLS en Supabase](https://supabase.com/docs/guides/database/postgres/row-level-security), [claves de Supabase](https://supabase.com/docs/guides/getting-started/api-keys), [funciones Node.js en Vercel](https://vercel.com/docs/functions/runtimes/node-js), [país aproximado en Vercel](https://vercel.com/docs/headers/request-headers).

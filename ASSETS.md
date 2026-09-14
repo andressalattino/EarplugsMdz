@@ -1,11 +1,11 @@
 # Imágenes y producto
 
-El catálogo actual tiene un solo producto: Loop Experience 2, según el enlace suministrado por el usuario. Precio de EarplugsMdz indicado por el vendedor: ARS 25.000.
+El catálogo tiene un solo producto: Tapones Earplugs, vendido por EarplugsMdz a ARS 25.000. El vendedor confirmó que no es de la marca Loop. No se trasladan al producto las especificaciones, talles, accesorios ni prestaciones del artículo usado como referencia visual.
 
-- Producto e imagen principal: https://www.amazon.com/Loop-Experience-Ear-Plugs-High-Fidelity/dp/B0D4DFQTMJ
-- Imagen guardada como public/images/loop-experience-2.jpg: https://m.media-amazon.com/images/I/51hHsqQulYL._AC_SL1500_.jpg
-- Características y usos contrastados con el fabricante: https://www.loopearplugs.com/products/experience
+- `public/images/earplugs-referencia.jpg`: foto de referencia conservada por pedido expreso del vendedor. No es una foto del producto ofrecido. La portada, la ficha y las preguntas frecuentes aclaran esa diferencia y permiten pedir fotos reales por WhatsApp.
+- Fuente de la referencia: https://www.amazon.com/Loop-Experience-Ear-Plugs-High-Fidelity/dp/B0D4DFQTMJ
+- Archivo original: https://m.media-amazon.com/images/I/51hHsqQulYL._AC_SL1500_.jpg
 - public/favicon.svg: símbolo original creado para EarplugsMdz.
 - public/images/moments.svg: ilustración decorativa original.
 
-La fotografía conserva el contenido y fondo de la imagen original. Los derechos pertenecen a sus titulares; este repositorio no concede una licencia sobre la foto ni sobre la marca Loop. No se trasladaron precios, reseñas, garantías ni políticas de Amazon o de Loop a la oferta de EarplugsMdz.
+La fotografía conserva su contenido original y sus derechos pertenecen a sus titulares. El repositorio no concede una licencia sobre esa foto. Cuando estén disponibles las fotografías reales, reemplazá la referencia y actualizá los avisos en `index.html` y `src/content.js`.

@@ -11,7 +11,11 @@ function renderProducts() {
     card.innerHTML = '<div class="product-image"><span class="product-tag"></span><img width="480" height="400" loading="lazy" /></div><div class="product-content"><p class="product-category"></p><h3></h3><p class="product-description"></p><div class="product-bottom"><div><small>PRECIO</small><strong></strong></div><a class="product-buy" target="_blank" rel="noopener noreferrer" aria-label="Consultar producto por WhatsApp">↗</a></div><a class="product-contact" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a></div>';
     card.querySelector('.product-image').classList.add(product.color);
     card.querySelector('.product-tag').textContent = product.tag;
-    const img = card.querySelector('img'); img.src = product.image; img.alt = `Presentación de ${product.name}`;
+    const img = card.querySelector('img'); img.src = product.image; img.alt = product.imageAlt || `Presentación de ${product.name}`;
+    if (product.imageNote) {
+      const note = document.createElement('p'); note.className = 'product-image-note'; note.textContent = product.imageNote;
+      card.querySelector('.product-image').append(note);
+    }
     card.querySelector('.product-category').textContent = product.category;
     card.querySelector('h3').textContent = product.name;
     card.querySelector('.product-description').textContent = product.description;

@@ -4,11 +4,11 @@ export const business = {
   location: 'Mendoza, Argentina',
   whatsapp: '542615077131',
   displayPhone: '+54 261 507 7131',
-  message: '¡Hola, EarplugsMdz! Quiero consultar por los Loop Experience 2.',
+  message: '¡Hola, EarplugsMdz! Quiero consultar por los tapones Earplugs.',
 };
 
 export const products = [
-  { id: 'loop-experience-2', name: 'Loop Experience 2', category: 'Música, recitales y eventos · 1 par', description: 'Tapones reutilizables de alta fidelidad que filtran el ruido y mantienen la claridad de la música. Un diseño compacto para acompañarte en recitales, festivales y eventos.', price: 25000, image: '/images/loop-experience-2.jpg', color: 'lilac', tag: 'ALTA FIDELIDAD', features: ['Un par de tapones Loop Experience 2', 'Almohadillas de silicona en talles XS, S, M y L', 'Estuche para llevarlos con vos'] },
+  { id: 'earplugs', name: 'Tapones Earplugs', category: 'TAPONES PARA OÍDOS', description: 'Un pequeño cambio para tus momentos de calma. Conocé los tapones disponibles en EarplugsMdz y consultanos para elegir según el uso que necesitás.', price: 25000, image: '/images/earplugs-referencia.jpg', imageAlt: 'Foto de referencia; no corresponde al producto ofrecido', color: 'lilac', tag: 'EARPLUGSMDZ', features: ['Atención personalizada en Mendoza', 'Consultá disponibilidad y formas de entrega'], imageNote: 'Foto de referencia. No corresponde al producto ofrecido. Pedinos fotos reales por WhatsApp.' },
 ];
 
 export function whatsappUrl(message = business.message) {

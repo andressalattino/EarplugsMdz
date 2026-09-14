@@ -8,7 +8,7 @@ Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo
 - Sitio y API implementados. Supabase conectado y verificado en el entorno local el 13/09/2026. El SQL ya está aplicado en el proyecto EarplugsMdz; no hace falta ejecutarlo otra vez en ese proyecto.
 - WhatsApp configurado: **+54 261 507 7131**.
 - Logo original de EarplugsMdz: símbolo SVG y marca tipográfica.
-- Un único producto: **Loop Experience 2**, con la imagen principal del enlace de Amazon indicado por el usuario. Precio indicado por el vendedor: **ARS 25.000**.
+- Un único producto: **Tapones Earplugs**, vendido por EarplugsMdz a **ARS 25.000**. La foto se conserva por pedido del vendedor como referencia y se identifica visiblemente como tal. No se atribuyen al producto la marca ni las especificaciones de Loop.
 - La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Para producción falta agregar las variables en Vercel y ajustar `APP_ORIGIN` al dominio publicado.
 
 ## 1. Probar localmente

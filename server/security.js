@@ -3,7 +3,8 @@ import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 export class HttpError extends Error { constructor(status, message) { super(message); this.status = status; } }
 export function required(name, min = 1) {
   const value = process.env[name];
-  if (!value || value.length < min) throw new HttpError(503, 'El servicio todavía no está configurado.');
+  if (!value || !value.trim()) throw new HttpError(503, `Configuración incompleta: falta ${name} en el servidor.`);
+  if (value.trim().length < min) throw new HttpError(503, `Configuración incompleta: ${name} debe tener al menos ${min} caracteres.`);
   return value;
 }
 export function secureEqual(a, b) {
@@ -14,7 +15,7 @@ export function hashPassword(password, salt = randomBytes(16).toString('hex')) {
   return `scrypt:${salt}:${scryptSync(password, salt, 64).toString('hex')}`;
 }
 export function verifyPassword(password, stored) {
-  if (!/^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(stored)) throw new HttpError(503, 'Configuración del administrador incompleta.');
+  if (!/^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(stored)) throw new HttpError(503, 'Configuración incompleta: ADMIN_PASSWORD_HASH debe contener el hash scrypt completo, no la contraseña.');
   return secureEqual(hashPassword(password, stored.split(':')[1]), stored);
 }
 function sign(value) { return createHmac('sha256', required('SESSION_SECRET', 32)).update(value).digest('base64url'); }
@@ -40,9 +41,11 @@ export function sessionCookie(token = '') {
 }
 export function requireAdmin(req) { if (!readSession(req)) throw new HttpError(401, 'Iniciá sesión para ver las estadísticas.'); }
 export function checkOrigin(req) {
-  const origins = [process.env.APP_ORIGIN, process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`, process.env.VERCEL_BRANCH_URL && `https://${process.env.VERCEL_BRANCH_URL}`].filter(Boolean).map(v => v.replace(/\/$/, ''));
+  // El dominio lo proporciona Vercel; nunca se acepta un Host enviado por el cliente.
+  const productionDomain = process.env.VERCEL === '1' && process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : null;
+  const origins = [process.env.APP_ORIGIN, process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`, process.env.VERCEL_BRANCH_URL && `https://${process.env.VERCEL_BRANCH_URL}`, productionDomain && `https://${productionDomain}`].filter(Boolean).map(v => v.trim().replace(/\/$/, ''));
   if (!origins.length) throw new HttpError(503, 'Falta configurar el origen de la aplicación.');
-  if (!origins.includes(req.headers.origin)) throw new HttpError(403, 'Origen no permitido.');
+  if (!origins.includes(req.headers.origin)) throw new HttpError(403, 'Origen no permitido. Revisá APP_ORIGIN en el despliegue activo.');
   if (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site'])) throw new HttpError(403, 'Origen no permitido.');
 }
 export function parseBody(req) {

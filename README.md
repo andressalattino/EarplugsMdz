@@ -151,10 +151,18 @@ Como el directorio estaba vacío, **todos los archivos del proyecto son nuevos**
 
 ## Validación realizada
 
-`npm test`: 19 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
+`npm test`: 21 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
 
 `npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo muestra un único producto, sin filtros de categorías. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
 
 Conexión real verificada el 13/09/2026: ambas tablas tienen RLS activado y forzado. La clave pública no puede consultar las tablas ni ejecutar `epm_stats` (401). La API local rechaza estadísticas sin sesión (401) y solicitudes de registro desde otro origen (403). Se registró una visita de prueba real, evento `a911600e-cb19-4afd-aa84-28aebd700398`, y se verificó que reintentar ese mismo evento no lo duplica. El inicio de sesión con el administrador y el dashboard muestran los datos reales de Supabase. Falta verificar el despliegue en Vercel cuando se publique.
 
 Fuentes técnicas: [Tailwind con Vite](https://tailwindcss.com/docs/installation/using-vite), [RLS en Supabase](https://supabase.com/docs/guides/database/postgres/row-level-security), [claves de Supabase](https://supabase.com/docs/guides/getting-started/api-keys), [funciones Node.js en Vercel](https://vercel.com/docs/functions/runtimes/node-js), [país aproximado en Vercel](https://vercel.com/docs/headers/request-headers).
+
+## Diagnóstico de configuración en Vercel
+
+Si el login o las visitas devuelven 503 por configuración incompleta, el mensaje identifica la variable faltante o demasiado corta, sin mostrar su valor. `ANALYTICS_SECRET` y `SESSION_SECRET` requieren al menos 32 caracteres; `ADMIN_PASSWORD_HASH` requiere el hash scrypt completo del archivo privado local, no la contraseña en texto. Copiá solo el valor posterior al signo `=` en Vercel y desplegá después de guardarlo.
+
+Además de `APP_ORIGIN` y las URLs de preview, en producción se acepta el dominio que Vercel suministra mediante `VERCEL_PROJECT_PRODUCTION_URL` cuando `VERCEL=1` y `VERCEL_ENV=production`. Debe estar habilitada la opción de exponer variables de sistema. No se confía en Host ni X-Forwarded-Host recibidos del cliente, y las solicitudes de sitios externos continúan bloqueadas.
+
+La foto vigente es `/images/earplugs-referencia.jpg`. Si una pestaña anterior solicita `loop-experience-2.jpg`, cerrá esa pestaña o hacé una recarga completa; el HTML actual ya usa el nombre corregido.

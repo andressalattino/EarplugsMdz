@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { hashPassword, verifyPassword, createSession, readSession, sessionCookie, checkOrigin, browserFamily, parseBody, anonymousHash } from '../server/security.js';
+import { hashPassword, verifyPassword, createSession, readSession, sessionCookie, checkOrigin, browserFamily, parseBody, anonymousHash, required } from '../server/security.js';
 import auth from '../api/auth.js';
 import stats from '../api/stats.js';
 import visit from '../api/visit.js';
@@ -91,3 +91,44 @@ test('país de Vercel, Do Not Track, bots y rate limit', async t => {
   req.headers['user-agent'] = 'Googlebot'; assert.equal((await invoke(visit, req)).body.recorded, false);
   req.headers['user-agent'] = 'Safari/123'; blocked = true; assert.equal((await invoke(visit, req)).statusCode, 429);
 });
+
+
+test('configuración inválida identifica la variable sin exponer su valor ni tocar Supabase', async t => {
+  let dbCalls = 0;
+  t.mock.method(globalThis, 'fetch', async () => { dbCalls++; throw new Error('No debe consultar Supabase'); });
+  setEnv(t, 'ANALYTICS_SECRET', 'valor-privado-corto');
+  const response = await invoke(auth, request('POST', '/api/auth', { username: 'admin', password: 'test-only-password' }));
+  assert.equal(response.statusCode, 503);
+  assert.match(response.body.error, /ANALYTICS_SECRET.*32 caracteres/);
+  assert.ok(!JSON.stringify(response.body).includes('valor-privado-corto'));
+  assert.equal(dbCalls, 0);
+  setEnv(t, 'SUPABASE_URL', '');
+  assert.throws(() => required('SUPABASE_URL'), /falta SUPABASE_URL/);
+});
+
+test('dominio de producción confiable de Vercel y orígenes falsificados', t => {
+  setEnv(t, 'VERCEL', '1');
+  setEnv(t, 'VERCEL_ENV', 'production');
+  setEnv(t, 'VERCEL_PROJECT_PRODUCTION_URL', 'earplugs.example');
+  setEnv(t, 'APP_ORIGIN', 'http://localhost:5173');
+  assert.doesNotThrow(() => checkOrigin({ headers: { origin: 'https://earplugs.example', 'sec-fetch-site': 'same-origin' } }));
+  assert.throws(() => checkOrigin({ headers: { origin: 'https://attacker.test', host: 'attacker.test', 'x-forwarded-host': 'attacker.test' } }));
+  assert.throws(() => checkOrigin({ headers: { origin: 'https://earplugs.example', 'sec-fetch-site': 'cross-site' } }));
+  assert.throws(() => checkOrigin({ headers: { host: 'earplugs.example' } }));
+  setEnv(t, 'VERCEL_ENV', 'preview');
+  assert.throws(() => checkOrigin({ headers: { origin: 'https://earplugs.example' } }));
+  setEnv(t, 'APP_ORIGIN', '  https://example.test/  ');
+  assert.doesNotThrow(() => checkOrigin({ headers: { origin: 'https://example.test' } }));
+});
+
+
+const savedTestEnv = new WeakMap();
+function setEnv(t, name, value) {
+  if (!savedTestEnv.has(t)) {
+    const original = new Map(); savedTestEnv.set(t, original);
+    t.after(() => { for (const [key, previous] of original) { if (previous === undefined) delete process.env[key]; else process.env[key] = previous; } });
+  }
+  const original = savedTestEnv.get(t);
+  if (!original.has(name)) original.set(name, process.env[name]);
+  process.env[name] = value;
+}

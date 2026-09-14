@@ -3,7 +3,7 @@ import { required, HttpError } from './security.js';
 
 export function database() {
   const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key) throw new HttpError(503, 'Falta configurar la conexión con Supabase.');
+  if (!key) throw new HttpError(503, 'Configuración incompleta: falta SUPABASE_SECRET_KEY o SUPABASE_SERVICE_ROLE_KEY en el servidor.');
   return createClient(required('SUPABASE_URL'), key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: (url, options) => fetch(url, { ...options, signal: AbortSignal.timeout(10000) }) } });
 }
 export async function rpc(name, parameters) {

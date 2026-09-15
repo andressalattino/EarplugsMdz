@@ -9,7 +9,7 @@ Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo
 - Contactos por WhatsApp: **+54 261 507 7131** y **+54 9 261 207-6711**.
 - Identidad visual: nombre Cella earplugs Mdz y símbolo SVG propio; no se presenta como logo oficial del fabricante.
 - Catálogo Cella: **Serie 1** (Blanco, Starlight, Negro) y **Serie 6** (Negro, Turquoise, Purple, Pink, Starlight, Midnight Blue). **ARS 19.000** por producto, para todos los colores.
-- Fotografías reales pendientes del vendedor: no se encontraron imágenes verificables de estas series. Cada variante admite su propia galería en `src/content.js`; por ahora muestra una placa sin fotografía. Ya no se utiliza la foto de referencia de otro fabricante.
+- Fotografías proporcionadas por el vendedor: cuatro de Serie 6 y una de Serie 1, con miniaturas y ampliación. Los colores fotografiados se identifican por separado del color elegido para consultar.
 - La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Las variables de producción ya se configuraron en Vercel y el login y las estadísticas fueron verificados en línea.
 
 ## 1. Probar localmente
@@ -168,8 +168,8 @@ Además de `APP_ORIGIN` y las URLs de preview, en producción se acepta el domin
 
 Las fotos anteriores de referencia dejaron de utilizarse. El admin usa la ilustración original `moments.svg`.
 
-## Catálogo Cella y fotografías pendientes
+## Catálogo Cella y fotografías
 
-`src/content.js` define dos series y nueve variantes. Cada variante contiene `images: []`: agregá fotos reales con objetos `{ src: "/images/cella-serie-1-blanco.jpg", alt: "Cella Serie 1 en Blanco" }`. No cambies fotos de una serie o color por las de otro. La galería permite miniaturas y ampliación cuando se incorporan imágenes. Los selectores actualizan la galería y los mensajes para ambos WhatsApp con la serie y el color elegidos. Los tonos de los selectores son orientativos; no sustituyen una fotografía real.
+Las galerías están definidas en src/content.js: product.images contiene las imágenes de cada serie, y variant.images permite agregar fotos específicas de un color. Las fotos incluyen src, alt, caption y, opcionalmente, color para abrir primero el detalle de la variante seleccionada.
 
-Pendientes: Serie 1 Blanco, Starlight y Negro; Serie 6 Negro, Turquoise, Purple, Pink, Starlight y Midnight Blue. Preferir originales JPG, PNG o WebP con al menos 1200 px en el lado mayor.
+Serie 6 cuenta con cuatro fotos originales y Serie 1 con una. Los selectores conservan los tres colores de Serie 1 y los seis de Serie 6, todos a ARS 19.000. Los mensajes a ambos WhatsApp incluyen la serie y el color seleccionados. La leyenda de cada foto describe lo fotografiado, no el pedido.

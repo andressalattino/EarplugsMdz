@@ -19,7 +19,7 @@ function renderProducts() {
       <div class="photo-pending"><span class="pending-series" aria-hidden="true"></span><p>Tu próximo momento de calma.</p><span class="pending-label">Foto del producto próximamente</span></div>
       <p class="visual-selection" aria-live="polite"></p>
     </div><div class="product-content">
-      <div class="photo-thumbnails" aria-label="Fotos del color seleccionado" hidden></div>
+      <div class="photo-thumbnails" aria-label="Galería de la serie" hidden></div><p class="gallery-note"></p>
       <p class="product-category">CELLA EARPLUGS</p><h3></h3><p class="product-description"></p>
       <fieldset class="color-options"><legend>Elegí tu color</legend><div class="color-buttons"></div></fieldset>
       <p class="selected-color" aria-live="polite"></p>
@@ -31,6 +31,7 @@ function renderProducts() {
     card.querySelector('.pending-series').textContent = product.number;
     card.querySelector('h3').textContent = product.name;
     card.querySelector('.product-description').textContent = product.description;
+    card.querySelector('.gallery-note').textContent = product.galleryNote || '';
     card.querySelector('strong').textContent = money.format(product.price);
     const photoButton = card.querySelector('.product-photo');
     const photo = photoButton.querySelector('img');
@@ -45,7 +46,8 @@ function renderProducts() {
       if (image) {
         photo.src = image.src;
         photo.alt = image.alt || `${product.name} · ${selectedVariant.name}`;
-        photoButton.setAttribute('aria-label', `Ampliar foto de ${product.name}, ${selectedVariant.name}`);
+        photoButton.setAttribute('aria-label', `Ampliar foto: ${image.caption || photo.alt}`);
+        card.querySelector('.visual-selection').textContent = image.caption || product.name;
       } else { photo.removeAttribute('src'); photo.alt = ''; }
       [...thumbnails.children].forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
     }
@@ -53,7 +55,7 @@ function renderProducts() {
     photoButton.addEventListener('click', () => {
       if (!activeImage) return;
       photoDialogImage.src = activeImage.src; photoDialogImage.alt = photo.alt;
-      photoCaption.textContent = `${product.name} · ${selectedVariant.name}`;
+      photoCaption.textContent = activeImage.caption || photo.alt;
       photoDialog.showModal();
     });
     function selectVariant(variant) {
@@ -63,16 +65,18 @@ function renderProducts() {
       colorButtons.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.variant === variant.id)));
       card.querySelector('.product-contact').href = whatsappUrl(productMessage(product, variant));
       card.querySelector('.alternate-contact').href = whatsappUrl(productMessage(product, variant), business.contacts[1]);
-      const images = variant.images;
+      const images = [...variant.images, ...(product.images || [])];
+      const matchingIndex = images.findIndex(image => image.color === variant.id);
+      const firstIndex = matchingIndex < 0 ? 0 : matchingIndex;
       thumbnails.replaceChildren(...images.map((image, index) => {
         const button = document.createElement('button'); button.type = 'button';
-        button.setAttribute('aria-label', `Ver foto ${index + 1} de ${product.name}, ${variant.name}`);
+        button.setAttribute('aria-label', `Ver foto ${index + 1}: ${image.caption || image.alt}`);
         const thumbnail = document.createElement('img'); thumbnail.src = image.src; thumbnail.alt = ''; thumbnail.loading = 'lazy';
         button.append(thumbnail); button.addEventListener('click', () => showImage(image, index));
         return button;
       }));
       thumbnails.hidden = images.length < 2;
-      showImage(images[0], 0);
+      showImage(images[firstIndex], firstIndex);
     }
     product.variants.forEach(variant => {
       const button = document.createElement('button'); button.type = 'button'; button.className = 'color-option'; button.dataset.variant = variant.id;

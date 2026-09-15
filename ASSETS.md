@@ -1,9 +1,13 @@
-# Imágenes e identidad de Cella earplugs Mdz
+# Fotografías de Cella earplugs Mdz
 
-El catálogo, las series, los colores y el precio de ARS 19.000 provienen del vendedor. No se añadieron prestaciones técnicas ni certificaciones no confirmadas.
+Cinco fotografías proporcionadas por el vendedor el 15/09/2026, copiadas sin recortes, recoloración ni ampliación artificial. Se conservan los originales PNG.
 
-No se encontraron fotografías verificables de Cella Serie 1 y Serie 6 en la búsqueda del 15/09/2026. Las fotos reales quedan pendientes del vendedor y se pueden cargar por variante en src/content.js. Las placas actuales son texto y decoración CSS; no representan la forma del producto. Las muestras de color son orientativas. La fotografía anterior de Loop dejó de utilizarse.
+- Foto 1: public/images/cella-serie-6-colores.png — Serie 6, seis colores con estuches.
+- Foto 2: public/images/cella-serie-6-purple.png — Serie 6, detalle Purple y almohadillas.
+- Foto 3: public/images/cella-serie-6-detalle.png — Serie 6, seis colores; también se usa en la portada.
+- Foto 4: public/images/cella-serie-6-estuches.png — Serie 6, estuches y almohadillas.
+- Foto 5: public/images/cella-serie-1-colores.png — Serie 1, vista de colores. La tienda ofrece únicamente Blanco, Starlight y Negro, aunque la foto muestre otros colores.
 
-- public/favicon.svg: símbolo original del sitio.
-- public/images/moments.svg: ilustración decorativa original, también usada en el acceso del administrador.
-- La marca tipográfica Cella earplugs Mdz es una composición del sitio, no una reproducción verificada del logo del fabricante.
+La Serie 6 incluye las cuatro fotografías en su galería. Al elegir Purple se abre primero su detalle. Las leyendas describen el color fotografiado, independientemente del seleccionado para el pedido. Los colores comerciales, precios y clasificación por serie fueron indicados por el vendedor.
+
+public/favicon.svg y public/images/moments.svg son dibujos originales del sitio. La marca tipográfica es una composición propia, no una reproducción verificada del logo del fabricante.

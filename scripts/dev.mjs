@@ -5,10 +5,12 @@ import { createServer as createViteServer } from 'vite';
 import auth from '../api/auth.js';
 import visit from '../api/visit.js';
 import stats from '../api/stats.js';
+import products from '../api/products.js';
+import productUpload from '../api/product-upload.js';
 const port = Number(process.env.PORT || 5173);
 process.env.APP_ORIGIN ||= `http://localhost:${port}`;
 const vite = await createViteServer({ server: { middlewareMode: true, hmr: { port: port + 1 } }, appType: 'mpa' });
-const handlers = { '/api/auth': auth, '/api/visit': visit, '/api/stats': stats };
+const handlers = { '/api/auth': auth, '/api/visit': visit, '/api/stats': stats, '/api/products': products, '/api/product-upload': productUpload };
 const server = createHttpServer(async (req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
   if (pathname.startsWith('/api/')) {
@@ -17,11 +19,11 @@ const server = createHttpServer(async (req, res) => {
     const handler = handlers[pathname];
     if (!handler) return res.status(404).json({ error: 'Ruta no encontrada.' });
     const chunks = []; let length = 0;
-    for await (const chunk of req) { length += chunk.length; if (length > 4096) return res.status(413).json({ error: 'Solicitud demasiado grande.' }); chunks.push(chunk); }
+    for await (const chunk of req) { length += chunk.length; if (length > (pathname === '/api/product-upload' ? 3 * 1024 * 1024 : pathname === '/api/products' ? 32768 : 4096)) return res.status(413).json({ error: 'Solicitud demasiado grande.' }); chunks.push(chunk); }
     req.body = Buffer.concat(chunks).toString();
     return handler(req, res);
   }
-  if (pathname === '/admin' || pathname === '/admin/estadisticas') req.url = '/admin.html';
+  if (pathname === '/admin' || pathname === '/admin/estadisticas' || pathname === '/admin/productos') req.url = '/admin.html';
   vite.middlewares(req, res);
 });
 server.listen(port, '127.0.0.1', () => console.log(`EarplugsMdz: http://localhost:${port}\nAdmin: http://localhost:${port}/admin/estadisticas`));

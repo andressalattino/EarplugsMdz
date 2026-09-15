@@ -11,3 +11,5 @@ Cinco fotografías proporcionadas por el vendedor el 15/09/2026, copiadas sin re
 La Serie 6 incluye las cuatro fotografías en su galería. Las miniaturas permiten cambiar la foto. Las leyendas describen el color fotografiado; la lista de colores es informativa. Los colores comerciales, precios y clasificación por serie fueron indicados por el vendedor.
 
 public/favicon.svg y public/images/moments.svg son dibujos originales del sitio. La marca tipográfica es una composición propia, no una reproducción verificada del logo del fabricante.
+
+Las imágenes añadidas desde el administrador se guardan en Supabase Storage, bucket epm-product-images. Se optimizan a WebP sin recortar ni cambiar los colores; los archivos originales del repositorio se conservan.

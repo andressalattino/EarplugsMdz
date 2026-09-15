@@ -1,9 +1,11 @@
+import { createProductAdmin } from './admin-products.js';
 import { Chart, LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Filler } from 'chart.js';
 Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Filler);
 const $ = selector => document.querySelector(selector);
 const number = value => new Intl.NumberFormat('es-AR').format(value);
 const formatDate = date => new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'short', timeZone: 'America/Argentina/Mendoza' }).format(new Date(`${date}T12:00:00Z`));
 let range = '7d'; let chart; let pending;
+const productAdmin = createProductAdmin({ api, expired: () => showLogin('Tu sesión venció. Volvé a ingresar.') });
 async function api(path, options = {}) {
   const response = await fetch(path, { credentials: 'same-origin', ...options });
   let data; try { data = await response.json(); } catch { throw new Error('No se pudo conectar con el servidor.'); }
@@ -11,12 +13,18 @@ async function api(path, options = {}) {
   return data;
 }
 function showLogin(message) {
-  pending?.abort(); chart?.destroy(); chart = null;
+  pending?.abort(); chart?.destroy(); chart = null; productAdmin.reset();
   $('#boot').hidden = true; $('#dashboard').hidden = true; $('#login').hidden = false;
   $('#password').value = '';
   $('#login-error').hidden = !message; $('#login-error').textContent = message || '';
 }
-function showDashboard() { $('#boot').hidden = true; $('#login').hidden = true; $('#dashboard').hidden = false; loadStats(); }
+function showDashboard() {
+  $('#boot').hidden = true; $('#login').hidden = true; $('#dashboard').hidden = false;
+  const productsPage = location.pathname === '/admin/productos';
+  $('#stats-view').hidden = productsPage; $('#products-view').hidden = !productsPage;
+  document.querySelectorAll('[data-admin-page]').forEach(link => { if ((link.dataset.adminPage === 'products') === productsPage) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
+  if (productsPage) productAdmin.load(); else loadStats();
+}
 function rankList(selector, rows, total, country = false) {
   const regionNames = new Intl.DisplayNames(['es'], { type: 'region' });
   const list = $(selector); list.replaceChildren();
@@ -72,7 +80,7 @@ $('#password-toggle').addEventListener('click', () => { const show = $('#passwor
 $('#logout').addEventListener('click', async () => {
   $('#logout').disabled = true;
   try { await api('/api/auth', { method: 'DELETE' }); showLogin(); }
-  catch (error) { $('#stats-error').textContent = `No se pudo cerrar la sesión. ${error.message}`; $('#stats-error').hidden = false; }
+  catch (error) { const target = location.pathname === '/admin/productos' ? $('#catalog-message') : $('#stats-error'); target.textContent = `No se pudo cerrar la sesión. ${error.message}`; target.hidden = false; }
   finally { $('#logout').disabled = false; }
 });
 document.querySelectorAll('[data-range]').forEach(button => button.addEventListener('click', () => {

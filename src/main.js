@@ -1,6 +1,7 @@
-import { business, products, whatsappUrl, productMessage } from './content.js';
+import { business, whatsappUrl, productMessage } from './content.js';
 import { trackVisit, analyticsDisabled, setAnalyticsDisabled } from './tracking.js';
 
+let products = [];
 const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 const photoDialog = document.querySelector('#photo-dialog');
 const photoDialogImage = photoDialog.querySelector('img');
@@ -12,11 +13,11 @@ function renderProducts() {
   const grid = document.querySelector('#product-grid');
   grid.replaceChildren(...products.map(product => {
     const card = document.createElement('article');
-    card.id = product.id; card.className = 'product-card'; card.dataset.series = product.id;
+    card.id = product.id; card.className = 'product-card'; card.dataset.series = product.series;
     card.innerHTML = `<div class="product-visual">
-      <span class="series-badge"></span><span class="visual-brand" aria-hidden="true">cella</span>
+      <span class="series-badge"></span><span class="visual-brand" aria-hidden="true">Cella</span>
       <button class="product-photo" type="button" hidden><img width="800" height="700" loading="lazy" /></button>
-      <div class="photo-pending"><span class="pending-series" aria-hidden="true"></span><p>Tu próximo momento de calma.</p><span class="pending-label">Foto del producto próximamente</span></div>
+      <div class="photo-pending"><span class="pending-series" aria-hidden="true"></span><p>Tu próximo momento de calma.</p><span class="pending-label">Foto no disponible</span></div>
       <p class="visual-selection" aria-live="polite"></p>
     </div><div class="product-content">
       <div class="photo-thumbnails" aria-label="Galería de la serie" hidden></div><p class="gallery-note"></p>
@@ -27,7 +28,7 @@ function renderProducts() {
       <a class="alternate-contact" target="_blank" rel="noopener noreferrer">Consultar al segundo WhatsApp ↗</a>
     </div>`;
     card.querySelector('.series-badge').textContent = product.series;
-    card.querySelector('.pending-series').textContent = product.number;
+    card.querySelector('.pending-series').textContent = product.series;
     card.querySelector('h3').textContent = product.name;
     card.querySelector('.product-description').textContent = product.description;
     card.querySelector('.gallery-note').textContent = product.galleryNote || '';
@@ -77,21 +78,50 @@ function renderProducts() {
     return card;
   }));
 }
-renderProducts();
-
-document.querySelectorAll('[data-series-filter]').forEach(button => button.addEventListener('click', () => {
-  const selected = button.dataset.seriesFilter;
-  document.querySelectorAll('[data-series-filter]').forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
-  const cards = [...document.querySelectorAll('.product-card')];
-  cards.forEach(card => { card.hidden = selected !== 'all' && card.dataset.series !== selected; });
-  document.querySelector('#catalog-status').textContent = selected === 'all' ? '2 series · 9 combinaciones de color' : `${cards.find(card => card.dataset.series === selected).querySelector('h3').textContent} · todos los colores a $19.000 ARS`;
-}));
-
-// Un acceso desde la portada también muestra la serie si había otro filtro activo.
-document.querySelectorAll('.hero-series-links a').forEach(link => link.addEventListener('click', () => {
-  const series = link.hash.slice(1);
-  document.querySelector('[data-series-filter="' + series + '"]').click();
-}));
+function filterProducts(series = '') {
+  document.querySelectorAll('[data-series-filter]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.seriesFilter === series)));
+  const selected = products.filter(p => !series || p.series === series);
+  document.querySelectorAll('.product-card').forEach(card => { card.hidden = Boolean(series) && card.dataset.series !== series; });
+  document.querySelector('#catalog-status').textContent = selected.length ? `${selected.length} productos · ${selected.reduce((sum, p) => sum + p.variants.length, 0)} opciones de color` : 'Próximamente nuevos productos.';
+}
+function renderCatalogDetails() {
+  const series = [...new Set(products.map(p => p.series))];
+  const filters = document.querySelector('.filter-row');
+  filters.replaceChildren(...['', ...series].map(value => {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'filter-button'; button.dataset.seriesFilter = value; button.textContent = value || 'Todos'; button.addEventListener('click', () => filterProducts(value)); return button;
+  }));
+  filterProducts();
+  const price = products.length ? Math.min(...products.map(p => p.price)) : null;
+  const equalPrices = products.length && products.every(p => p.price === price);
+  const pricing = price === null ? 'Consultanos por WhatsApp.' : `${equalPrices ? 'Todos los modelos a' : 'Modelos desde'} ${money.format(price)} ARS.`;
+  document.querySelector('#catalog-pricing').textContent = pricing;
+  document.querySelector('#catalog-banner').textContent = products.length ? `CELLA EARPLUGS · ${pricing.toUpperCase()}` : 'CELLA EARPLUGS · MENDOZA';
+  document.querySelector('#catalog-summary').textContent = 'Conocé las series y los colores disponibles. Consultanos por WhatsApp para coordinar tu pedido.';
+  document.querySelector('#catalog-faq').textContent = products.length ? products.map(p => `${p.name}: ${p.variants.map(v => v.name).join(', ')} (${money.format(p.price)} ARS).`).join(' ') + ' Consultá disponibilidad por WhatsApp.' : 'Escribinos por WhatsApp para conocer las novedades.';
+  const featured = products.find(p => p.id === 'cella-serie-6') || products[0];
+  const heroImage = document.querySelector('.cella-photo-hero img');
+  heroImage.hidden = !featured?.images.length;
+  if (featured?.images.length) { heroImage.src = featured.images[0].src; heroImage.alt = featured.images[0].alt; }
+  document.querySelector('.hero-photo-label').textContent = featured ? `CELLA · ${featured.series}` : 'CELLA EARPLUGS';
+  document.querySelector('.hero-series-links').replaceChildren(...products.slice(0, 2).map(product => {
+    const link = document.createElement('a'); link.href = '#' + product.id; link.textContent = 'Ver ' + product.series + ' ↗'; link.addEventListener('click', () => filterProducts(product.series)); return link;
+  }));
+}
+async function loadCatalog() {
+  const error = document.querySelector('#catalog-error'); error.hidden = true;
+  const retry = document.querySelector('#catalog-retry'); retry.disabled = true;
+  document.querySelector('#catalog-status').textContent = 'Cargando productos…';
+  try {
+    const response = await fetch('/api/products', { signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error('catalog');
+    const data = await response.json(); products = data.products;
+    renderProducts(); renderCatalogDetails();
+  } catch {
+    error.hidden = false; document.querySelector('#catalog-status').textContent = 'Catálogo temporalmente no disponible.';
+  } finally { retry.disabled = false; }
+}
+document.querySelector('#catalog-retry').addEventListener('click', loadCatalog);
+loadCatalog();
 
 document.querySelectorAll('[data-whatsapp]').forEach(a => {
   const contact = business.contacts.find(contact => contact.id === a.dataset.whatsapp) || business.contacts[0];

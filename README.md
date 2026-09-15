@@ -170,6 +170,10 @@ Las fotos anteriores de referencia dejaron de utilizarse. El admin usa la ilustr
 
 ## Catálogo Cella y fotografías
 
-Las galerías están definidas en src/content.js: product.images contiene las imágenes de cada serie. Las fotos incluyen src, alt y caption. product.variants define los nombres y las muestras de color de la lista informativa.
+El catálogo se administra en **/admin/productos** con el mismo acceso que las estadísticas. Permite crear y editar productos, definir precio y colores, cargar/reordenar fotos y guardar borradores o publicar. Ver [guía de uso y configuración](ADMIN-PRODUCTOS.md).
 
-Serie 6 cuenta con cuatro fotos originales y Serie 1 con una. Las listas muestran los tres colores de Serie 1 y los seis de Serie 6, todos a ARS 19.000. Los mensajes a ambos WhatsApp incluyen la serie y el precio, y consultan los colores disponibles. La leyenda de cada foto describe lo fotografiado, no el pedido.
+Ejecutar **supabase/catalog.sql** después del esquema base. No necesita nuevas variables de entorno. Las dos series actuales se cargan como punto de partida sin sobrescribir ediciones existentes. A partir de entonces los productos se guardan en Supabase, no en src/content.js (que conserva únicamente los datos de la semilla histórica y contacto).
+
+La web obtiene los productos publicados desde /api/products. Los colores son informativos. Las consultas a ambos WhatsApp incluyen el nombre y precio vigente. La galería muestra las fotos de cada producto y permite ampliarlas.
+
+Archivos nuevos: api/products.js, api/product-upload.js, server/catalog.js, src/admin-products.js, src/admin-products.css, supabase/catalog.sql, tests/catalog.test.js y ADMIN-PRODUCTOS.md. Las rutas, el servidor local, las vistas públicas y la autenticación existente se integran con el catálogo.

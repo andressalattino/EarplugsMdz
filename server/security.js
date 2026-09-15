@@ -39,7 +39,7 @@ export function sessionCookie(token = '') {
   const secure = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
   return `epm_admin=${token}; Path=/api; HttpOnly; SameSite=Strict; Max-Age=${token ? 8 * 3600 : 0}${secure ? '; Secure' : ''}`;
 }
-export function requireAdmin(req) { if (!readSession(req)) throw new HttpError(401, 'Iniciá sesión para ver las estadísticas.'); }
+export function requireAdmin(req) { if (!readSession(req)) throw new HttpError(401, 'Iniciá sesión para acceder al administrador.'); }
 export function checkOrigin(req) {
   // El dominio lo proporciona Vercel; nunca se acepta un Host enviado por el cliente.
   const productionDomain = process.env.VERCEL === '1' && process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : null;
@@ -48,15 +48,15 @@ export function checkOrigin(req) {
   if (!origins.includes(req.headers.origin)) throw new HttpError(403, 'Origen no permitido. Revisá APP_ORIGIN en el despliegue activo.');
   if (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site'])) throw new HttpError(403, 'Origen no permitido.');
 }
-export function parseBody(req) {
+export function parseBody(req, maxBytes = 4096) {
   if (!String(req.headers['content-type'] || '').startsWith('application/json')) throw new HttpError(415, 'Se requiere JSON.');
-  if (Number(req.headers['content-length'] || 0) > 4096) throw new HttpError(413, 'Solicitud demasiado grande.');
+  if (Number(req.headers['content-length'] || 0) > maxBytes) throw new HttpError(413, 'Solicitud demasiado grande.');
   let value = req.body;
   if (typeof value === 'string' || Buffer.isBuffer(value)) {
-    if (Buffer.byteLength(value) > 4096) throw new HttpError(413, 'Solicitud demasiado grande.');
+    if (Buffer.byteLength(value) > maxBytes) throw new HttpError(413, 'Solicitud demasiado grande.');
     try { value = JSON.parse(value.toString()); } catch { throw new HttpError(400, 'JSON inválido.'); }
   }
-  if (!value || typeof value !== 'object' || Array.isArray(value) || Buffer.byteLength(JSON.stringify(value)) > 4096) throw new HttpError(400, 'Solicitud inválida.');
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Buffer.byteLength(JSON.stringify(value)) > maxBytes) throw new HttpError(400, 'Solicitud inválida.');
   return value;
 }
 export function anonymousHash(value) { return createHmac('sha256', required('ANALYTICS_SECRET', 32)).update(value).digest('hex'); }

@@ -52,5 +52,5 @@ export function whatsappUrl(message = business.message, contact = business.conta
 
 export function productMessage(product) {
   const price = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(product.price);
-  return `¡Hola, Cella earplugs Mdz! Me interesa Cella ${product.series}, a ${price} ARS. ¿Qué colores tienen disponibles?`;
+  return `¡Hola, Cella earplugs Mdz! Me interesa ${product.name}, a ${price} ARS. ¿Qué colores tienen disponibles?`;
 }

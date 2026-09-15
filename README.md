@@ -9,7 +9,7 @@ Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo
 - Contactos por WhatsApp: **+54 261 507 7131** y **+54 9 261 207-6711**.
 - Identidad visual: nombre Cella earplugs Mdz y símbolo SVG propio; no se presenta como logo oficial del fabricante.
 - Catálogo Cella: **Serie 1** (Blanco, Starlight, Negro) y **Serie 6** (Negro, Turquoise, Purple, Pink, Starlight, Midnight Blue). **ARS 19.000** por producto, para todos los colores.
-- Fotografías proporcionadas por el vendedor: cuatro de Serie 6 y una de Serie 1, con miniaturas y ampliación. Los colores fotografiados se identifican por separado del color elegido para consultar.
+- Fotografías proporcionadas por el vendedor: cuatro de Serie 6 y una de Serie 1, con miniaturas y ampliación. Los colores se muestran como información, sin selección ni compra en la web.
 - La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Las variables de producción ya se configuraron en Vercel y el login y las estadísticas fueron verificados en línea.
 
 ## 1. Probar localmente
@@ -154,7 +154,7 @@ Como el directorio estaba vacío, **todos los archivos del proyecto son nuevos**
 
 `npm test`: 21 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
 
-`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo incluye dos series, filtros y selección independiente de color. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
+`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo incluye dos series, filtros y listas informativas de colores. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
 
 Conexión real verificada el 13/09/2026: ambas tablas tienen RLS activado y forzado. La clave pública no puede consultar las tablas ni ejecutar `epm_stats` (401). La API local rechaza estadísticas sin sesión (401) y solicitudes de registro desde otro origen (403). Se registró una visita de prueba real, evento `a911600e-cb19-4afd-aa84-28aebd700398`, y se verificó que reintentar ese mismo evento no lo duplica. El inicio de sesión con el administrador y el dashboard muestran los datos reales de Supabase. Falta verificar el despliegue en Vercel cuando se publique.
 
@@ -170,6 +170,6 @@ Las fotos anteriores de referencia dejaron de utilizarse. El admin usa la ilustr
 
 ## Catálogo Cella y fotografías
 
-Las galerías están definidas en src/content.js: product.images contiene las imágenes de cada serie, y variant.images permite agregar fotos específicas de un color. Las fotos incluyen src, alt, caption y, opcionalmente, color para abrir primero el detalle de la variante seleccionada.
+Las galerías están definidas en src/content.js: product.images contiene las imágenes de cada serie. Las fotos incluyen src, alt y caption. product.variants define los nombres y las muestras de color de la lista informativa.
 
-Serie 6 cuenta con cuatro fotos originales y Serie 1 con una. Los selectores conservan los tres colores de Serie 1 y los seis de Serie 6, todos a ARS 19.000. Los mensajes a ambos WhatsApp incluyen la serie y el color seleccionados. La leyenda de cada foto describe lo fotografiado, no el pedido.
+Serie 6 cuenta con cuatro fotos originales y Serie 1 con una. Las listas muestran los tres colores de Serie 1 y los seis de Serie 6, todos a ARS 19.000. Los mensajes a ambos WhatsApp incluyen la serie y el precio, y consultan los colores disponibles. La leyenda de cada foto describe lo fotografiado, no el pedido.

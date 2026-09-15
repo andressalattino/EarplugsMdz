@@ -21,8 +21,7 @@ function renderProducts() {
     </div><div class="product-content">
       <div class="photo-thumbnails" aria-label="Galería de la serie" hidden></div><p class="gallery-note"></p>
       <p class="product-category">CELLA EARPLUGS</p><h3></h3><p class="product-description"></p>
-      <fieldset class="color-options"><legend>Elegí tu color</legend><div class="color-buttons"></div></fieldset>
-      <p class="selected-color" aria-live="polite"></p>
+      <div class="color-options"><p class="color-heading">Colores disponibles</p><ul class="color-list" aria-label="Colores disponibles"></ul></div>
       <div class="product-bottom"><div><small>PRECIO · ARS</small><strong></strong></div><span class="price-note">Todos los colores<br />al mismo precio</span></div>
       <a class="product-contact button" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp <span aria-hidden="true">↗</span></a>
       <a class="alternate-contact" target="_blank" rel="noopener noreferrer">Consultar al segundo WhatsApp ↗</a>
@@ -37,15 +36,14 @@ function renderProducts() {
     const photo = photoButton.querySelector('img');
     const pending = card.querySelector('.photo-pending');
     const thumbnails = card.querySelector('.photo-thumbnails');
-    const colorButtons = card.querySelector('.color-buttons');
-    let selectedVariant = product.variants[0];
+    const colorList = card.querySelector('.color-list');
     let activeImage = null;
     function showImage(image, index) {
       activeImage = image || null;
       photoButton.hidden = !image; pending.hidden = Boolean(image);
       if (image) {
         photo.src = image.src;
-        photo.alt = image.alt || `${product.name} · ${selectedVariant.name}`;
+        photo.alt = image.alt || product.name;
         photoButton.setAttribute('aria-label', `Ampliar foto: ${image.caption || photo.alt}`);
         card.querySelector('.visual-selection').textContent = image.caption || product.name;
       } else { photo.removeAttribute('src'); photo.alt = ''; }
@@ -58,34 +56,24 @@ function renderProducts() {
       photoCaption.textContent = activeImage.caption || photo.alt;
       photoDialog.showModal();
     });
-    function selectVariant(variant) {
-      selectedVariant = variant;
-      card.querySelector('.selected-color').textContent = `Color elegido: ${variant.name}`;
-      card.querySelector('.visual-selection').textContent = `${product.series} / ${variant.name}`;
-      colorButtons.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.variant === variant.id)));
-      card.querySelector('.product-contact').href = whatsappUrl(productMessage(product, variant));
-      card.querySelector('.alternate-contact').href = whatsappUrl(productMessage(product, variant), business.contacts[1]);
-      const images = [...variant.images, ...(product.images || [])];
-      const matchingIndex = images.findIndex(image => image.color === variant.id);
-      const firstIndex = matchingIndex < 0 ? 0 : matchingIndex;
-      thumbnails.replaceChildren(...images.map((image, index) => {
-        const button = document.createElement('button'); button.type = 'button';
-        button.setAttribute('aria-label', `Ver foto ${index + 1}: ${image.caption || image.alt}`);
-        const thumbnail = document.createElement('img'); thumbnail.src = image.src; thumbnail.alt = ''; thumbnail.loading = 'lazy';
-        button.append(thumbnail); button.addEventListener('click', () => showImage(image, index));
-        return button;
-      }));
-      thumbnails.hidden = images.length < 2;
-      showImage(images[firstIndex], firstIndex);
-    }
+    card.querySelector('.product-contact').href = whatsappUrl(productMessage(product));
+    card.querySelector('.alternate-contact').href = whatsappUrl(productMessage(product), business.contacts[1]);
+    const images = product.images || [];
+    thumbnails.replaceChildren(...images.map((image, index) => {
+      const button = document.createElement('button'); button.type = 'button';
+      button.setAttribute('aria-label', `Ver foto ${index + 1}: ${image.caption || image.alt}`);
+      const thumbnail = document.createElement('img'); thumbnail.src = image.src; thumbnail.alt = ''; thumbnail.loading = 'lazy';
+      button.append(thumbnail); button.addEventListener('click', () => showImage(image, index));
+      return button;
+    }));
+    thumbnails.hidden = images.length < 2;
+    showImage(images[0], 0);
     product.variants.forEach(variant => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'color-option'; button.dataset.variant = variant.id;
-      button.setAttribute('aria-label', `${product.series}: ${variant.name}`);
+      const item = document.createElement('li'); item.className = 'color-label';
       const dot = document.createElement('span'); dot.className = 'color-dot'; dot.style.backgroundColor = variant.swatch; dot.setAttribute('aria-hidden', 'true');
-      button.append(dot, document.createTextNode(variant.name));
-      button.addEventListener('click', () => selectVariant(variant)); colorButtons.append(button);
+      item.append(dot, document.createTextNode(variant.name));
+      colorList.append(item);
     });
-    selectVariant(selectedVariant);
     return card;
   }));
 }

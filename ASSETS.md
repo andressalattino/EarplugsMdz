@@ -8,6 +8,6 @@ Cinco fotografías proporcionadas por el vendedor el 15/09/2026, copiadas sin re
 - Foto 4: public/images/cella-serie-6-estuches.png — Serie 6, estuches y almohadillas.
 - Foto 5: public/images/cella-serie-1-colores.png — Serie 1, vista de colores. La tienda ofrece únicamente Blanco, Starlight y Negro, aunque la foto muestre otros colores.
 
-La Serie 6 incluye las cuatro fotografías en su galería. Al elegir Purple se abre primero su detalle. Las leyendas describen el color fotografiado, independientemente del seleccionado para el pedido. Los colores comerciales, precios y clasificación por serie fueron indicados por el vendedor.
+La Serie 6 incluye las cuatro fotografías en su galería. Las miniaturas permiten cambiar la foto. Las leyendas describen el color fotografiado; la lista de colores es informativa. Los colores comerciales, precios y clasificación por serie fueron indicados por el vendedor.
 
 public/favicon.svg y public/images/moments.svg son dibujos originales del sitio. La marca tipográfica es una composición propia, no una reproducción verificada del logo del fabricante.

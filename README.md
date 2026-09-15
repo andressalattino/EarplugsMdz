@@ -1,15 +1,16 @@
-# EarplugsMdz
+# Cella earplugs Mdz
 
 Web en español argentino con HTML, JavaScript, Tailwind CSS 4 y Vite. Catálogo, contacto por WhatsApp y panel privado de visitas. API serverless para Vercel y PostgreSQL en Supabase. Chart.js se utiliza porque funciona directamente con JavaScript, sin React.
 
 ## Estado de entrega
 
-- Repositorio Git local creado. No se creó un repositorio remoto ni se publicaron cambios en una cuenta de Vercel.
+- Repositorio: https://github.com/andressalattino/EarplugsMdz. Sitio: https://earplugs-mdz.vercel.app. El nombre comercial es Cella earplugs Mdz; las direcciones y la base de datos existentes se conservan.
 - Sitio y API implementados. Supabase conectado y verificado en el entorno local el 13/09/2026. El SQL ya está aplicado en el proyecto EarplugsMdz; no hace falta ejecutarlo otra vez en ese proyecto.
-- WhatsApp configurado: **+54 261 507 7131**.
-- Logo original de EarplugsMdz: símbolo SVG y marca tipográfica.
-- Un único producto: **Tapones Earplugs**, vendido por EarplugsMdz a **ARS 25.000**. La foto se conserva por pedido del vendedor como referencia y se identifica visiblemente como tal. No se atribuyen al producto la marca ni las especificaciones de Loop.
-- La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Para producción falta agregar las variables en Vercel y ajustar `APP_ORIGIN` al dominio publicado.
+- Contactos por WhatsApp: **+54 261 507 7131** y **+54 9 261 207-6711**.
+- Identidad visual: nombre Cella earplugs Mdz y símbolo SVG propio; no se presenta como logo oficial del fabricante.
+- Catálogo Cella: **Serie 1** (Blanco, Starlight, Negro) y **Serie 6** (Negro, Turquoise, Purple, Pink, Starlight, Midnight Blue). **ARS 19.000** por producto, para todos los colores.
+- Fotografías reales pendientes del vendedor: no se encontraron imágenes verificables de estas series. Cada variante admite su propia galería en `src/content.js`; por ahora muestra una placa sin fotografía. Ya no se utiliza la foto de referencia de otro fabricante.
+- La configuración `.env.local` de esta carpeta tiene la conexión privada a Supabase y el usuario y la contraseña solicitados, almacenada como hash. No está incluida en Git ni en el ZIP. Las variables de producción ya se configuraron en Vercel y el login y las estadísticas fueron verificados en línea.
 
 ## 1. Probar localmente
 
@@ -153,7 +154,7 @@ Como el directorio estaba vacío, **todos los archivos del proyecto son nuevos**
 
 `npm test`: 21 pruebas pasan. Incluye ejecución del SQL real en PostgreSQL embebido (PGlite), migración repetida, permisos/RLS, rol del servidor, fechas límite de Mendoza, idempotencia, rate limits y más de 1.000 registros. Los tests de API cubren cookies, expiración, CSRF, login, anonimización y acceso privado.
 
-`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo muestra un único producto, sin filtros de categorías. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
+`npm run build`: compilación de producción verificada. Navegación, enlace de WhatsApp, menú móvil, inicio de sesión y filtros del dashboard probados en navegador. El catálogo incluye dos series, filtros y selección independiente de color. El dashboard se comprobó primero contra una base PostgreSQL local aislada; esos datos de muestra no se cargaron en Supabase.
 
 Conexión real verificada el 13/09/2026: ambas tablas tienen RLS activado y forzado. La clave pública no puede consultar las tablas ni ejecutar `epm_stats` (401). La API local rechaza estadísticas sin sesión (401) y solicitudes de registro desde otro origen (403). Se registró una visita de prueba real, evento `a911600e-cb19-4afd-aa84-28aebd700398`, y se verificó que reintentar ese mismo evento no lo duplica. El inicio de sesión con el administrador y el dashboard muestran los datos reales de Supabase. Falta verificar el despliegue en Vercel cuando se publique.
 
@@ -165,4 +166,10 @@ Si el login o las visitas devuelven 503 por configuración incompleta, el mensaj
 
 Además de `APP_ORIGIN` y las URLs de preview, en producción se acepta el dominio que Vercel suministra mediante `VERCEL_PROJECT_PRODUCTION_URL` cuando `VERCEL=1` y `VERCEL_ENV=production`. Debe estar habilitada la opción de exponer variables de sistema. No se confía en Host ni X-Forwarded-Host recibidos del cliente, y las solicitudes de sitios externos continúan bloqueadas.
 
-La foto vigente es `/images/earplugs-referencia.jpg`. Si una pestaña anterior solicita `loop-experience-2.jpg`, cerrá esa pestaña o hacé una recarga completa; el HTML actual ya usa el nombre corregido.
+Las fotos anteriores de referencia dejaron de utilizarse. El admin usa la ilustración original `moments.svg`.
+
+## Catálogo Cella y fotografías pendientes
+
+`src/content.js` define dos series y nueve variantes. Cada variante contiene `images: []`: agregá fotos reales con objetos `{ src: "/images/cella-serie-1-blanco.jpg", alt: "Cella Serie 1 en Blanco" }`. No cambies fotos de una serie o color por las de otro. La galería permite miniaturas y ampliación cuando se incorporan imágenes. Los selectores actualizan la galería y los mensajes para ambos WhatsApp con la serie y el color elegidos. Los tonos de los selectores son orientativos; no sustituyen una fotografía real.
+
+Pendientes: Serie 1 Blanco, Starlight y Negro; Serie 6 Negro, Turquoise, Purple, Pink, Starlight y Midnight Blue. Preferir originales JPG, PNG o WebP con al menos 1200 px en el lado mayor.

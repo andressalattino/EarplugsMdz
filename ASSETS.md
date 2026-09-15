@@ -1,11 +1,9 @@
-# Imágenes y producto
+# Imágenes e identidad de Cella earplugs Mdz
 
-El catálogo tiene un solo producto: Tapones Earplugs, vendido por EarplugsMdz a ARS 25.000. El vendedor confirmó que no es de la marca Loop. No se trasladan al producto las especificaciones, talles, accesorios ni prestaciones del artículo usado como referencia visual.
+El catálogo, las series, los colores y el precio de ARS 19.000 provienen del vendedor. No se añadieron prestaciones técnicas ni certificaciones no confirmadas.
 
-- `public/images/earplugs-referencia.jpg`: foto de referencia conservada por pedido expreso del vendedor. No es una foto del producto ofrecido. La portada, la ficha y las preguntas frecuentes aclaran esa diferencia y permiten pedir fotos reales por WhatsApp.
-- Fuente de la referencia: https://www.amazon.com/Loop-Experience-Ear-Plugs-High-Fidelity/dp/B0D4DFQTMJ
-- Archivo original: https://m.media-amazon.com/images/I/51hHsqQulYL._AC_SL1500_.jpg
-- public/favicon.svg: símbolo original creado para EarplugsMdz.
-- public/images/moments.svg: ilustración decorativa original.
+No se encontraron fotografías verificables de Cella Serie 1 y Serie 6 en la búsqueda del 15/09/2026. Las fotos reales quedan pendientes del vendedor y se pueden cargar por variante en src/content.js. Las placas actuales son texto y decoración CSS; no representan la forma del producto. Las muestras de color son orientativas. La fotografía anterior de Loop dejó de utilizarse.
 
-La fotografía conserva su contenido original y sus derechos pertenecen a sus titulares. El repositorio no concede una licencia sobre esa foto. Cuando estén disponibles las fotografías reales, reemplazá la referencia y actualizá los avisos en `index.html` y `src/content.js`.
+- public/favicon.svg: símbolo original del sitio.
+- public/images/moments.svg: ilustración decorativa original, también usada en el acceso del administrador.
+- La marca tipográfica Cella earplugs Mdz es una composición del sitio, no una reproducción verificada del logo del fabricante.
